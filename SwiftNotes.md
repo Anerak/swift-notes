@@ -956,3 +956,55 @@ let london = City(population: 9_000_000)
 london.collectTaxes()
 // → 9000000000
 ```
+
+### **`struct`** **mutating methods**
+
+A **`struct`** may have variable properties but if the instance is defined as a constant, its properties can't be changed.
+
+Because **Swift** has no idea whether we use the **`struct`** with constants or variables, so we need to mark methods that modify properties using the `mutating` keyword.
+
+Once we add the `mutating` keyword, **Swift** will prevent the usage of those functions with structs created with the **`let`** keyword. Also, methods that aren't marked as `mutating` , cannot call a `mutating` function. Both must be marked as `mutating`
+
+``` swift
+struct Person {
+    var name: String
+
+    mutating func makeAnonymous() {
+        name = "Anonymous"
+    }
+}
+
+var person = Person(name: "Ed")
+print(person.name)
+// → "Ed"
+person.makeAnonymous()
+print(person.name)
+// → "Anonymous"
+```
+
+### **`String`** **: properties and methods**
+
+Believe it or not, the `String` we'd been using all this time...is a **`struct`** !
+
+Here are some methods
+
+| Method   | Function |
+|----------|----------|
+| `.count` |number of characters of the string |
+| `.hasPrefix("Do")` |returns `true` if the string starts with the specified letters|
+| `.uppercased()` |uppercase the string|
+| `.sorted()` |sort the letters of the string into an array|
+| `.contains("fox")` |returns `true` if the string contains the word `fox`
+
+### **`Array`** **: properties and methods**
+
+Yep, just like `String` , the other types of data are also **`struct`**.
+
+| Method   | Function |
+|----------|----------|
+`.count` | returns the amount of items in the array
+`.append("Buzz")` | adds the value to the array
+`.firstIndex(of: "Buzz")` | returns the position of the value we search
+`.sorted()` |sorts the array alphabetically
+`.remove(at: 0)` |removes the item at the position 0
+`.contains("Buzz")` | search for the value that matches the input
