@@ -996,6 +996,8 @@ Here are some methods
 | `.sorted()` |sort the letters of the string into an array|
 | `.contains("fox")` |returns `true` if the string contains the word `fox`
 
+---
+
 ### **`Array`** **: properties and methods**
 
 Yep, just like `String` , the other types of data are also **`struct`**.
@@ -1008,3 +1010,130 @@ Yep, just like `String` , the other types of data are also **`struct`**.
 `.sorted()` |sorts the array alphabetically
 `.remove(at: 0)` |removes the item at the position 0
 `.contains("Buzz")` | search for the value that matches the input
+
+---
+
+### **`struct`** **initializers**
+
+Initializers are special methods that provide different ways to create a **`struct`**.
+
+All **`structs`** come with one by default, called _memberwise initializer_ ( `StructName(property: "value")` ).
+
+``` swift
+struct User {
+    var username: String
+}
+
+var user = User(username: "twostraws")
+```
+
+You can also make use of the **`init()`** method. Don't write **`func`** before initializers but make sure that all properties have a value before the initializer ends.
+
+``` swift
+struct User {
+    var username: String
+
+    init() {
+        username = "Anonymous"
+        print("Creating a new user")
+    }
+}
+
+var user = User()
+// → "Creating a new user"
+print(user.username)
+// → "Anonymous"
+user.username = "foo"
+print(user.username)
+// → "foo"
+```
+
+### **`struct`** **: Refering to the current instance**
+
+Inside methods, there's a special constant called **`self`**, which points to whatever instance of the **`struct`** is currently being used.
+
+It's very useful when we're creating a method that takes a parameter named just like a property of the **`struct`**.
+
+``` swift
+struct Person {
+    var name: String
+
+    init(name: String) {
+        print("\(name) was born!")
+        self.name = name
+    }
+}
+```
+
+### **Lazy properties**
+
+**Swift** allow us to create some properties that will be created only when they're first accessed.
+
+We use the **`lazy`** to define those properties.
+
+``` swift
+struct FamilyTree {
+    init() {
+        print("Creating family tree")
+    }
+}
+
+struct Person {
+    var name: String
+    lazy var familyTree = FamilyTree()
+
+    init(name: String) {
+        self.name = name
+    }
+}
+
+var mike = Person(name: "Mike")
+mike.familyTree
+```
+
+### **`static`** **properties and methods**
+
+We can share properties and methods across all the instances of the **`struct`**. That's when the **`static`** keyword comes handy.
+
+``` swift
+struct Student {
+    static var classSize = 0
+    var name: String
+
+    init(name: String) {
+        self.name = name
+        Student.classSize += 1
+    }
+}
+
+let foo = Student(name: "Foo")
+let bar = Student(name: "Bar")
+print(Student.classSize)
+// → 2
+```
+
+### **Access control**
+
+Sometimes we want to restrict our properties or methods, preventing unwanted access.
+
+Simply use the **`private`** keyword. The opposite is **`public`**
+
+``` swift
+struct Person {
+    private var id: String
+
+    init(id: String) {
+        self.id = id
+    }
+
+    func identify() -> String {
+        return "My social security number is \(id)"
+    }
+}
+
+let foo = Person(id: "one")
+foo.id
+// → 'id' is inaccessible due to 'private' protection level
+print(foo.identify())
+// → "My social security number is one"
+```
