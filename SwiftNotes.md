@@ -1137,3 +1137,116 @@ foo.id
 print(foo.identify())
 // → "My social security number is one"
 ```
+
+## **Classes**
+
+---
+
+The main difference between **`struct`** and **`class`** is that the latter never come with a memberwise initializer, that means we must always create our own initializer.
+
+``` swift
+class Dog {
+    var name: String
+    var breed: String
+
+    init(name: String, breed: String) {
+        self.name = name
+        self.breed = breed
+    }
+}
+
+let fido = Dog(name: "Fido", breed: "Poodle")
+```
+
+### **Class inheritance**
+
+Another difference with `struct` is that a `class` can inherit all the properties and methods from another `class` .  
+It also means that the new `class` will inherit the initializer from the superclass but we can define a new one for it.  
+Remember to call `super.init(parameters)` when defining an initializer for the child class.
+
+``` swift
+class Poodle: Dog {
+    init(name: String) {
+        super.init(name: name, breed: "Poodle")
+    }
+}
+```
+
+### **`class`** **: Overriding methods**
+
+Child classes can replace parent methods and changing it's functionality.
+
+Use the `override` keyword to declare a method as overriding the parent's method. Thanks to this keyword, we can be sure that we're not overriding a method that we don't want to.
+
+``` swift
+class Dog {
+    func makeNoise() {
+        print("Woof!")
+    }
+}
+
+class Poodle: Dog {
+    override func makeNoise() {
+        print("Yip!")
+    }
+}
+```
+
+### **`final class`**
+
+Sometimes we don't want out class to be modified, just work as intended. That's where the **`final`** keyword comes handy.  
+A `final` class means that it can't be inherited and their methods can't be overrided.  
+To make a class `final` , just add the keyword before the `class` keyword.
+
+### **Copying objects**
+
+The third difference between `struct` and `class` is how they are copied. A `struct` and its copy make reference to different spots (changing struct 1 will not change struct 2), unlike classes, which reference to the same space in memory.
+
+### **Deinitializers**
+
+Hold on... If we need to use an initializer for defining our data, why would we need another one for destroying our class?
+
+Well, in this case, deinitializers are executed when an instance of the **`class`** is destroyed.  
+Just like **`init()`**, deinitilizers keyword is **`deinit`**
+
+Classes need a deinitializer because there can be many copies of the same **`class`** and will always be a reference to the same data.
+
+``` swift
+class Person {
+    var name = "John Doe"
+
+    init() {
+        print("\(name) is alive!")
+    }
+
+    func printGreeting() {
+        print("Hello, I'm \(name)")
+    }
+
+    deinit {
+        print("\(name) is no more!")
+    }
+}
+
+for _ in 1...3 {
+    let person = Person()
+    person.printGreeting()
+}
+// → "John Doe is alive!"
+// → "Hello, I'm John Doe"
+// → "John Doe is no more!"
+
+// → "John Doe is alive!"
+// → "Hello, I'm John Doe"
+// → "John Doe is no more!"
+
+// → "John Doe is alive!"
+// → "Hello, I'm John Doe"
+// → "John Doe is no more!"
+```
+
+### **Mutability**
+
+A constant **`class`** with a variable property doesnt need the **`mutating`** keyword with methods to change that property.
+
+If we want to prevent this behaviour, we need to define the property as a constant.
