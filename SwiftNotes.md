@@ -1345,3 +1345,30 @@ names.summarize()
 // → "John"
 // → "Mary"
 ```
+
+### **`protocol`** **oriented programming**
+
+**`protocol`** extensions can provide default implementations for our own **`protocol`** methods.
+
+The "**`protocol`** oriented programming" is based on creating code around **`protocol`** and **`protocol`** extensions.
+
+``` swift
+protocol Identifiable {
+    var id: String { get set }
+    func identify()
+}
+
+extension Identifiable {
+    func identify() {
+        print("My ID is \(id).")
+    }
+}
+
+struct User: Identifiable {
+    var id: String
+}
+
+let foobar = User(id: "Foobar")
+foobar.identify()
+// → "My ID is Foobar."
+```
