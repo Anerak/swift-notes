@@ -1250,3 +1250,98 @@ for _ in 1...3 {
 A constant **`class`** with a variable property doesnt need the **`mutating`** keyword with methods to change that property.
 
 If we want to prevent this behaviour, we need to define the property as a constant.
+
+## **`protocol`**
+
+---
+Protocols allow us to describe the properties and methods something must have ( **`class`** , **`struct`**).
+
+We can't create instances of **`protocol`** .
+
+``` swift
+protocol Identifiable {
+    var id: String { get set }
+}
+
+struct User: Identifiable {
+    var id: String
+}
+
+func displayID(thing: Identifiable) {
+    print("My ID is \(thing.id)")
+}
+
+var user1 = User(id: "Foo")
+displayID(user1)
+// → "My ID is Foo"
+```
+
+### **`protocol`** **inheritance**
+
+Unlike classes, **`protocol`** can inherit multiple protocols.
+
+``` swift
+protocol Payable {
+    func calculateWages() -> Int
+}
+
+protocol NeedsTraining {
+    func study()
+}
+
+protocol HasVacation {
+    func takeVacation(days: Int)
+}
+
+protocol Employee: Payable, NeedsTraining, HasVacation {}
+```
+
+### **Extensions**
+
+Extensions allow us to add methods to existing types.
+
+**Swift** doesn't store properties in extensions, so we need to use computed properties instead.
+
+``` swift
+extension Int {
+    func squared() -> Int {
+        return self * self
+    }
+
+    var isEven: Bool {
+        return self % 2 == 0
+    }
+}
+
+let testInt = 8
+testInt.squared()
+// → 64
+print(testInt.isEven)
+// → true
+```
+
+### **`protocol`** **extensions**
+
+Using **`extension`** to add methods to a **`protocol`** acts like regular extensions but rather than extending a specific type like `Int` , we'll be extending a whole **`protocol`** with all the conforming types.
+
+For example, both `Array` and `Set` conform a **`protocol`** called **`Collection`**, so we'll be modifying both of them when extending that **`protocol`**.
+
+``` swift
+
+let names = ["Foo", "Bar", "John", "Mary"]
+
+extension Collection {
+    func summarize() {
+        print("There are \(count) of us:")
+        for name in self {
+            print(name)
+        }
+    }
+}
+
+names.summarize()
+// → "Foo"
+// → "Bar"
+// → "John"
+// → "Mary"
+```
