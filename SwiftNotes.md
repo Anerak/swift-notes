@@ -1249,7 +1249,7 @@ for _ in 1...3 {
 
 A constant **`class`** with a variable property doesnt need the **`mutating`** keyword with methods to change that property.
 
-If we want to prevent this behaviour, we need to define the property as a constant.
+If we want to prevent this behavior, we need to define the property as a constant.
 
 ## **`protocol`**
 
@@ -1371,4 +1371,175 @@ struct User: Identifiable {
 let foobar = User(id: "Foobar")
 foobar.identify()
 // → "My ID is Foobar."
+```
+
+## **Optionals**
+
+---
+
+What is an **optional**? Can I eat one?  
+Well, the answer is very simple (and you can't eat it): an **optional** is trying to answer *`what if our variable doesn't have a value?`* and based on that, make sure to handle those situations. In other words, handling **`nil`** values (that's how **Swift** call **`null`**).
+
+### **Handling missing data**
+
+If we don't know a value at first, we can declare it as optional by adding **`?`** after the type and assigning **`nil`** as value. Then we can modify the variable later to assign a real value.
+
+``` swift
+var age: Int? = nil
+age = 38 // age is not nil anymore.
+```
+
+### **Unwrapping optionals**
+
+Let's say we have a `String` variable that can be **`nil`**, how do we use something like the method `count` . If it's value hasn't been defined, it'll return an error, so we want to avoid that scenario.
+
+Well, we can unwrap our optional with **`if let`**.
+
+``` swift
+var name: String? = nil
+
+if let unwrapped = name {
+    print("\(unwrapped.count) letters")
+} else {
+    print("Missing name.")
+}
+// → "Missing name."
+```
+
+### **Unwrapping with** **`guard`**
+
+The alternative to **`if let`** is **`guard let`**. The major difference is that using **`guard let`** keeps the unwrapped optional usable after the **`guard`** code.
+
+When to use **`guard`**? Well, it require that we exit the current scope after checking for **`nil`** but it allow us to focus on the correct behavior of our code.
+
+``` swift
+func greet(_ name: String?) {
+    guard let unwrapped = name else {
+        print("You didn't provide a name!")
+        return
+    }
+    print("Hello, \(unwrapped))
+}
+```
+
+### **Force unwrapping**
+
+There may be times where we know that our variable isn't **`nil`**
+
+For example, if our variable contains an `String` that has a number, we can convert it as an `Int` using **`Int(varname)`** . This will return an optional `Int` -> `Int?` .
+
+In case you're extremely sure that the converted `String` will be an `Int` , use **`!`** to force **Swift** to return an `Int` instead of an optional.
+
+``` swift
+let str = "5"
+let optionalInt = Int(str)  // Int?
+let realInt = Int(str)!     // Int
+```
+
+### **Implicitly unwrapped optionals**
+
+Unlike regular optionals, we don't need to unwrap implicit optionals to make use of them.
+
+Code will crash if they don't have a value when you use them, so make sure that you only declare implicit unwrapped optionals when the variable will always get a value.
+
+``` swift
+let age: Int! = nil
+age.description // Error!
+```
+
+### **`nil`** **coalescing**
+
+The **`nil`** operator unwraps an optional and returns the value inside if there's one.
+
+Think about it as *`if the value is null, return this instead`*
+
+``` swift
+func username(for id: Int) -> String? {
+    if id == 1 {
+        return "Bar"
+    } else {
+        return nil
+    }
+}
+
+let user = username(for: 15) ?? "Anonymous"
+print(user)
+// → "Anonymous"
+```
+
+### **Optional chaining**
+
+If we want too access something like `a.b.c` but we don't know if `b` isn't **`nil`**, then we can use the **`?`** operator.
+
+``` swift
+let names = ["Peter", "John", "Paul", "Jake"]
+let selectedName = names.first?.uppercased()
+// If first returns nil, Swift won't try to uppercase it
+// The value of selectedName will be nil
+```
+
+### **Optional** **`try`**
+
+Working with throwing functions requires the usage of **`do`**, **`try`** and **`catch`**.
+
+We have two alternatives for it:
+
+* **`try?`** changes throwing functions into functions that return an optional.
+
+* **`try!`** use this when you know your function won't ever fail, otherwise it'll crash.
+
+``` swift
+if let result = try? checkPassword("password") {
+    print("Result was \(result)")
+} else {
+    print("Error!")
+}
+
+try! checkPassword("sekrit")
+print("OK!")
+```
+
+## **Failable initializers**
+
+A failable initializer is an initilizer tht might work or might not.  
+In order to define it, we need to add **`?`** to the **`init`** keyword of our object.
+
+A failable initilizer will return **`nil`** if a condition isn't met during the initialization.
+
+``` swift
+struct Person {
+    var id: String
+
+    init?(id: String) {
+        if id.count == 9 {
+            self.id = id
+        } else {
+            return nil
+        }
+    }
+}
+
+let person1 = Person(id: "one")         // Error!
+let person2 = Person(id: "thisisgut")   // Good
+```
+
+### **Typecasting**
+
+Typecasting can be really useful when we're iterating over a collection of objects and we want to use certain functionality of an specific type.  
+It works by telling **Swift** to think object type A is actually type B.  
+
+Use the **`as?`** keyword, which returns an optional that will be **`nil`** if the typecast fails.
+
+``` swift
+let mixedArray: [Any] = [1, "2", 3, 4, "fish"]
+var onlyInt: [Int] = []
+
+for item in mixedArray {
+    if let number = item as? Int {
+        onlyInt.append(number)
+    }
+}
+
+print(onlyInt)
+// → [1, 3, 4]
 ```
